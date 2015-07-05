@@ -65,7 +65,7 @@ genie_host = 'localhost:8080'
 elasticsearch_hosts = [{'host': 'localhost', 'port': 9200}]
 elasticsearch = Elasticsearch(elasticsearch_hosts)
 clusters = [
-    Cluster(id='cluster_1', name='cluster_1', host=socket.getfqdn())
+    Cluster(id='cluster_1', name='cluster_1', rm_host='host of rm', nn_host='host of namenode', rm_port=54311, nn_port=54310)
 ]
 
 handler = IndexHandler(trace=inviso_trace, elasticsearch=elasticsearch)

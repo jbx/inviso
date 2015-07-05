@@ -18,10 +18,9 @@ EPOCH = datetime(1970, 1, 1, tzinfo=pytz.UTC)
 
 
 class Cluster:
-    def __init__(self, id, name, host, rm_host, nn_host, rm_port, nn_port):
+    def __init__(self, id, name, rm_host, nn_host, rm_port, nn_port):
         self.id = id
         self.name = name
-        self.host = host
         self.rm_host = rm_host
         self.nn_host = nn_host
         self.rm_port = rm_port
@@ -280,7 +279,6 @@ class HdfsMr2LogMonitor(ElasticSearchMonitor):
                  jobflow,
                  cluster_id,
                  cluster_name,
-                 host,
                  nn_host,
                  nn_port,
                  log_path='/mr-history/done/', **kwargs):

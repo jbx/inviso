@@ -84,7 +84,7 @@ def index_stats(clusters):
                 'timestamp': timestamp,
                 'cluster': cluster.name,
                 'cluster.id': cluster.id,
-                'host': cluster.host
+                'host': cluster.rm_host
             }
             
             index_apps(es, cluster, info)
