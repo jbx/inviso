@@ -240,7 +240,8 @@ function loadAppData(cluster, start, stop, includes) {
               app.splice(i,0,{x:p, y:0, id:id, user: user, queue: queue});
             } else {
               app[i].x = p;
-              app[i].y = app[i][$('#metric').val()];
+//	      app[i].y = app[i][$('#metric').val()];
+              app[i].y = 1;
             }
 
             app[i].appId = id;
@@ -302,7 +303,8 @@ function loadAppData(cluster, start, stop, includes) {
               user: user,
               apps: apps,
               x: parseInt(period),
-              y: apps?d3.sum(g[user], function(d){return d[$('#metric').val()];}):0
+//              y: apps?d3.sum(g[user], function(d){return d[$('#metric').val()];}):0
+              y: apps?d3.sum(g[user], function(d){return 1;}):0
             });
           });
 
@@ -327,7 +329,8 @@ function loadAppData(cluster, start, stop, includes) {
               queue: queue,
               apps: apps,
               x: parseInt(period),
-              y: apps?d3.sum(g[queue], function(d){return d[$('#metric').val()];}):0
+//              y: apps?d3.sum(g[queue], function(d){return d[$('#metric').val()];}):0
+              y: apps?d3.sum(g[queue], function(d){return 1;}):0
             });
           });
 
@@ -394,7 +397,7 @@ function loadCapacityStream(cluster, start, stop) {
       return layer;
     });
 
-    var colorRange = d3.scale.linear().range(["#2d4fca", "#90cde7"]);
+    var colorRange = d3.scale.linear().range(["#1ed760", "#000000"]);
 
     legend = [
       {text:"Allocated", color:colorRange(0)},

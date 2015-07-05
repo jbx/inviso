@@ -33,7 +33,7 @@
       timeFormat: 'YYYY-MM-DD HH:mm:ss (UTC ZZ)',
       color: function(d) {
         if(this.c === undefined) {
-          this.c = d3.scale.linear().range(["#90cde7", "#2d4fca"]);
+            this.c = d3.scale.linear().range(["#19e68c", "#1e3264"]);
         }
         return d.color || this.c(Math.random());
       },
