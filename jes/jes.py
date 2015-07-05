@@ -27,6 +27,8 @@ def main():
                                           cluster_id=cluster.id, 
                                           cluster_name=cluster.name, 
                                           host=cluster.host,
+                                          nn_host=cluster.nn_host,
+                                          nn_port=cluster.nn_port,
                                           publisher=publisher,
                                           elasticsearch=settings.elasticsearch))
     

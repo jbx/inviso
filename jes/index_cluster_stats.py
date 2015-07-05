@@ -14,7 +14,7 @@ log = get_logger('inviso.cluster')
 es_index = 'inviso-cluster'
 
 def index_apps(es, cluster, info):
-    apps = requests.get('http://%s:%s/ws/v1/cluster/apps?state=RUNNING' % (cluster.host, '9026'), headers = {'ACCEPT':'application/json'}).json().get('apps')
+    apps = requests.get('http://%s:%s/ws/v1/cluster/apps?state=RUNNING' % (cluster.rm_host, cluster.rm_port), headers = {'ACCEPT':'application/json'}).json().get('apps')
     
     if not apps:
         log.info(cluster.name + ': no applications running.')
@@ -51,7 +51,7 @@ def index_apps(es, cluster, info):
     log.debug(bulk(es, documents, stats_only=True));
 
 def index_metrics(es, cluster, info):
-    metrics = requests.get('http://%s:%s/ws/v1/cluster/metrics' % (cluster.host, '9026'), headers = {'ACCEPT':'application/json'}).json()['clusterMetrics']
+    metrics = requests.get('http://%s:%s/ws/v1/cluster/metrics' % (cluster.rm_host, cluster.rm_port), headers = {'ACCEPT':'application/json'}).json()['clusterMetrics']
     metrics.update(info)
     
     r = es.index(index=es_index, 
@@ -63,7 +63,7 @@ def index_metrics(es, cluster, info):
     log.debug(r)
 
 def index_scheduler(es, cluster, info):
-    scheduler = requests.get('http://%s:%s/ws/v1/cluster/scheduler' % (cluster.host, '9026'), headers = {'ACCEPT':'application/json'}).json()['scheduler']['schedulerInfo']['rootQueue']
+    scheduler = requests.get('http://%s:%s/ws/v1/cluster/scheduler' % (cluster.rm_host, cluster.rm_port), headers = {'ACCEPT':'application/json'}).json()['scheduler']['schedulerInfo']['queues']
     scheduler.update(info)
 
     r = es.index(index=es_index, 
@@ -89,9 +89,7 @@ def index_stats(clusters):
             
             index_apps(es, cluster, info)
             index_metrics(es, cluster, info)
-
-            #FairScheduler
-            #index_scheduler(es, cluster, info)
+            index_scheduler(es, cluster, info)
         except Exception as e:
             log.error('Error processing: ' + cluster.name)
             log.exception(e)

@@ -7,6 +7,7 @@ import re
 import os
 import arrow
 from util import get_logger
+from datetime import date, timedelta
 
 from snakebite.client import Client
 
@@ -17,10 +18,14 @@ EPOCH = datetime(1970, 1, 1, tzinfo=pytz.UTC)
 
 
 class Cluster:
-    def __init__(self, id, name, host):
+    def __init__(self, id, name, host, rm_host, nn_host, rm_port, nn_port):
         self.id = id
         self.name = name
         self.host = host
+        self.rm_host = rm_host
+        self.nn_host = nn_host
+        self.rm_port = rm_port
+        self.nn_port = nn_port
 
 class Monitor(object):
     def __init__(self, publisher=None, **kwargs):
@@ -275,22 +280,28 @@ class HdfsMr2LogMonitor(ElasticSearchMonitor):
                  jobflow,
                  cluster_id,
                  cluster_name,
-                 host='localhost',
-                 port=9000,
-                 log_path='/tmp/hadoop-yarn/staging/history/done', **kwargs):
+                 host,
+                 nn_host,
+                 nn_port,
+                 log_path='/mr-history/done/', **kwargs):
         super(HdfsMr2LogMonitor, self).__init__(**kwargs)
 
         self.jobflow = jobflow
         self.cluster_id = cluster_id
         self.cluster_name = cluster_name
-        self.host = host
-        self.port = port
+        self.host = nn_host
+        self.port = nn_port
         self.log_path = log_path
 
     def run(self):
         c = Client(self.host, self.port)
 
-        listing = c.ls([self.log_path], recurse=True)
+        # Only list today, yesterday 
+        today = date.today()
+        yesterday = date.today() - timedelta(1)
+        today_path = self.log_path + today.strftime('%Y/%m/%d')
+        yesterday_path = self.log_path + yesterday.strftime('%Y/%m/%d')
+        listing = c.ls([yesterday_path, today_path], recurse=True)
 
         for f in listing:
             path = f['path']
